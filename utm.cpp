@@ -64,16 +64,14 @@ geo UTM::to_Geo() {
                  (830251.0 / 7257600.0) * n6;
   double beta5 = (4583.0 / 161280.0) * n5 - (108847.0 / 3628800.0) * n6;
   double beta6 = (20648693.0 / 638668800.0) * n6;
-
-  // calculo de xi y eta ec 11 pdf, pasando la sumatoria hacia la izquiera de la
-  // ecuacion para xiprima y etaprima , sumatoria limitada a los 6 valores de
-  // beta obtenidos anteriormente.
   double xi = (norteAjustado - 0.0) /
               (k0 * A); // ecuaciones 15 para chi y eta (no prima)
   double eta = (este - FALSO_ESTE) / (k0 * A);
 
   double xiPrima = xi;
-
+  // calculo de xi y eta ec 11 pdf, pasando la sumatoria hacia la izquiera de la
+  // ecuacion para xiprima y etaprima , sumatoria limitada a los 6 valores de
+  // beta obtenidos anteriormente.
   for (int i = 1; i <= 6; i++) {
     double beta = 0;
     if (i == 1)
