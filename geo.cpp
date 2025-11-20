@@ -1,4 +1,5 @@
 #include "geo.h"
+#include "utm.h"
 #include <cmath>
 
 // Para pasara de geo a utm se sigue:
@@ -9,11 +10,11 @@
 
 // Constantes de WGS84: (similares a las de utm.cpp-utm.h)
 //
-const double GEO_A = 6378137.0;           // Radio ecuatorial
-const double GEO_F = 1.0 / 298.257223563; // Aplanamiento
-const double GEO_K0 = 0.9996;             // Factor de escala UTM
-const double GEO_E0 = 500000.0;           // Falso Este
-const double GEO_N0 = 0.0;                // Falso Norte (hemisferio norte)
+const double GEO_A = 6378137.0;           // radio ecuatorial
+const double GEO_F = 1.0 / 298.257223563; // aplanamiento
+const double GEO_K0 = 0.9996;             // factor de escala UTM
+const double GEO_E0 = 500000.0;           // falso Este
+const double GEO_N0 = 0.0;                // falso Norte (hemisferio norte)
 const double PI = 3.14159265358979323846;
 
 geo::geo(double latitud, double longitud)
@@ -53,4 +54,8 @@ UTM geo::to_UTM() {
   double n4 = n3 * n;
   double n5 = n4 * n;
   double n6 = n5 * n;
+
+  double este, norte;
+
+  return UTM(este, norte, zona);
 }
