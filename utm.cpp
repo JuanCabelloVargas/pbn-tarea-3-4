@@ -2,6 +2,8 @@
 #include "geo.h"
 #include <cmath>
 
+// Mas documentacion en README.
+
 // Proceso de conversion utm sigue el orden:
 // Coordenadas UTM (Este, norte) -> Normalizar a chi y eta -> aplicar series de
 // kruger inversas (etaprima chi prima) -> calcular chi -> apllicar serie de
