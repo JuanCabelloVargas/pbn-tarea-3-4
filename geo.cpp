@@ -22,3 +22,35 @@ geo::geo(double latitud, double longitud)
 double geo::getLatitud() { return latitud; }
 
 double geo::getLongitud() { return longitud; }
+
+UTM geo::to_UTM() {
+  int zona = 19; // zona chilena segun hemisferio
+
+  // calculamos el meridiano central de la zona respectiva
+  double meridionoCentral = (zona - 1) * 6.0 - 180.0 + 3.0;
+
+  // convertimos los grados a radianes
+  double latitudRadianes = latitud * PI / 180.0;
+  double longitudRadianes = longitud * PI / 180.0;
+  double meridianoCenRadianes = meridionoCentral * PI / 180.0;
+
+  // parametros del elipsoide obtenidos con las constantes de WGS84
+
+  double b = GEO_A * (1.0 - GEO_F);
+  double e2 =
+      1.0 -
+      (b * b) /
+          (GEO_A * GEO_A); // este valor es la inversa de f en las constantes
+                           // de WGS84, representa la excentricidad
+  double e = sqrt(e2);
+  double n = (GEO_A - b) / (GEO_A + b);
+
+  // coeficientes de proyeccion, mismos de UTM, obtenidos de las formulas de
+  // Transverse Mercator with an accuracy of a few nanometers
+
+  double n2 = n * n;
+  double n3 = n2 * n;
+  double n4 = n3 * n;
+  double n5 = n4 * n;
+  double n6 = n5 * n;
+}
