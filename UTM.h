@@ -11,7 +11,7 @@ private:
   int zona; // para chile la zona es la 19
             //
   static constexpr double a =
-      66378137.0; // Este es el radio ecuatorial, medido en metros
+      6378137.0; // Este es el radio ecuatorial, medido en metros
   static constexpr double f =
       1.0 / 298.257223563; // Aplanamiento de la tierra (mide que tan "aplastada
                            // esta")

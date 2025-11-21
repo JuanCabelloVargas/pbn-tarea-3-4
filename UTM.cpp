@@ -1,4 +1,4 @@
-#include "utm.h"
+#include "UTM.h"
 #include "geo.h"
 #include <cmath>
 
@@ -29,16 +29,13 @@ geo UTM::to_Geo() {
 
   // meridiano central de la zona (especifico para cada una, en este caso vemos
   // la de chile)
-  //
   double lon0 = (zona - 1) * 6.0 - 180.0 + 3.0;
 
-  // debemos detectar en que emisferio estamos:
-  bool hemisferioSur = (norte < 0) || (norte >= FALSO_NORTE_SUR);
-  double norteAjustado = norte;
-
-  if (hemisferioSur && norte >= FALSO_NORTE_SUR) {
-    norteAjustado = norte - FALSO_NORTE_SUR;
-  }
+  // En la tarea todos los puntos son de Chile (hemisferio sur) y las
+  // coordenadas UTM vienen con falso norte de 10 000 000 m aplicado.
+  // Por lo tanto, siempre restamos FALSO_NORTE_SUR para obtener la
+  // coordenada real medida desde el ecuador.
+  double norteAjustado = norte - FALSO_NORTE_SUR;
 
   // parametros del elipsoide (Transverse Mercator with an accuracy of a few
   // nanometers), pagina 3 y 7, ecuaniones 14, 12,35
@@ -64,6 +61,7 @@ geo UTM::to_Geo() {
                  (830251.0 / 7257600.0) * n6;
   double beta5 = (4583.0 / 161280.0) * n5 - (108847.0 / 3628800.0) * n6;
   double beta6 = (20648693.0 / 638668800.0) * n6;
+
   double xi = (norteAjustado - 0.0) /
               (k0 * A); // ecuaciones 15 para chi y eta (no prima)
   double eta = (este - FALSO_ESTE) / (k0 * A);
@@ -84,7 +82,6 @@ geo UTM::to_Geo() {
       beta = beta4;
     else if (i == 5)
       beta = beta5;
-
     else if (i == 6)
       beta = beta6;
 
@@ -104,20 +101,17 @@ geo UTM::to_Geo() {
       beta = beta4;
     else if (i == 5)
       beta = beta5;
-
     else if (i == 6)
       beta = beta6;
 
-    xiPrima -= beta * cos(2.0 * i * xi) * sinh(2.0 * i * eta);
+    etaPrima -= beta * cos(2.0 * i * xi) * sinh(2.0 * i * eta);
   }
 
   // valores de chi
-  double chi = asin(sin(xiPrima)) / cosh(etaPrima);
+  double chi = asin(sin(xiPrima) / cosh(etaPrima));
 
   // calcular e2: excentricidad.
-  //
   double e2 = 1.0 - (b * b) / (a * a);
-  double e = sqrt(e2);
 
   // pasamos a la conversion de la latitud
   double latitud = chi;
@@ -135,11 +129,6 @@ geo UTM::to_Geo() {
   double longitud = lon0 + atan2(sinh(etaPrima), cos(xiPrima)) * 180.0 / PI;
 
   latitud = latitud * 180.0 / PI; // transformacion a grados
-
-  // Ajustar signo debido a hemisferioSur
-  if (hemisferioSur) {
-    latitud = -latitud;
-  }
 
   return geo(latitud, longitud);
 }
