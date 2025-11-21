@@ -1,5 +1,5 @@
 #include "geo.h"
-#include "utm.h"
+#include "UTM.h"
 #include <cmath>
 
 // Para pasara de geo a utm se sigue:
@@ -52,8 +52,6 @@ UTM geo::to_UTM() {
   double n2 = n * n;
   double n3 = n2 * n;
   double n4 = n3 * n;
-  double n5 = n4 * n;
-  double n6 = n5 * n;
 
   double A = (GEO_A / (1.0 + n)) *
              (1.0 + ((1.0 / 4.0) * n2) +
@@ -71,7 +69,8 @@ UTM geo::to_UTM() {
   // calculo de eta y de t, donde t es la tangente de la latitud, en ecuacion 8
   // el autor realiza el cambio para eliminar los valores de latitud y longitud
   double t = tan(latitudRadianes);
-  double eta2 = e2 * cos(latitudRadianes) * cos(latitudRadianes) / (1.0 - e2);
+  // double eta2 = e2 * cos(latitudRadianes) * cos(latitudRadianes) / (1.0 -
+  // e2);
 
   // buscamos la diferencia de la longitud
   double deltaLongitud = longitudRadianes - meridianoCenRadianes;
@@ -128,7 +127,7 @@ UTM geo::to_UTM() {
   // (northing and easting (y,x) respecitvamente), se puede ver mas en la
   // ecuacion 13
 
-  double este = GEO_K0 * A * eta;
+  double este = GEO_E0 + GEO_K0 * A * eta;
   double norte = GEO_K0 * A * xi;
 
   // finalmente ajustamos la latitud segun el hemisferio sur
@@ -136,5 +135,5 @@ UTM geo::to_UTM() {
     norte += 10000000.0;
   }
 
-  return UTM(este, norte, zona);
+  return UTM(norte, este, zona);
 }
